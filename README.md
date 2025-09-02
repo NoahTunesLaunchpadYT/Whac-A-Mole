@@ -193,7 +193,7 @@ on clk event:
 **Inputs**
 
 * `clk`
-* `combo_count`
+* `score_increase`
 * `rst`
 
 **Output**
@@ -202,7 +202,7 @@ on clk event:
 
 **Notes**
 
-* If `combo_count` changed since last cycle → add `combo_count` to `score`.
+* If `score_increase` changed since last cycle → add `score_increase` to `score`.
 * Always output `score`.
 * If `rst` high → reset score to 0.
 
