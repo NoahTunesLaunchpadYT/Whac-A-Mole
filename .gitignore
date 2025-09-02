@@ -1,0 +1,15 @@
+# Quartus generated files
+*.qpf
+*.qsf.bak
+*.rpt
+*.summary
+*.smsg
+*.jdi
+*.sof
+*.pof
+*.qws
+*.qdf
+db/
+incremental_db/
+output_files/
+simulation/
