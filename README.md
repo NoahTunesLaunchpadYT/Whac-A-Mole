@@ -12,7 +12,7 @@ Here’s a cleaned-up, well-structured version of your notes. I’ve standardise
 
    * Use the *New Project Wizard*.
    * Set the repository as the project path.
-   * Use **`MTRX3700Ass1`** as the project name.
+   * Pick a project name.
    * Select the DE2 board (Cyclone IV, EP4CE115F29C7).
 
 3. **Add Verilog files**
