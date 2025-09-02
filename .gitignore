@@ -1,6 +1,8 @@
 # Quartus generated files
 *.qpf
+*.qsf
 *.qsf.bak
+*.v.bak
 *.rpt
 *.summary
 *.smsg
