@@ -9,7 +9,7 @@ module timer #(
     input                       					enable,
 	 
     output reg [$clog2(GAME_LENGTH_SECONDS)-1:0]	count_down_seconds,
-    output reg [$clog2(1000)-1:0]						count_down_milliseconds
+    output [$clog2(1000*GAME_LENGTH_SECONDS)-1:0]	count_down_milliseconds
 );
 
 	localparam MS_PER_SECOND = 1000;
@@ -17,13 +17,13 @@ module timer #(
 	reg [15:0] clk_cycles;
    reg [10:0] ms_within_second;
 	
-	
+	assign count_down_milliseconds = MS_PER_SECOND * count_down_seconds + (MS_PER_SECOND - ms_within_second - 1);
 
 	always @(posedge clk) begin
 		if (rst) begin														// If the clock is reset
 			clk_cycles <= 0;												// Set cycles to 0
 			ms_within_second <= 0;										// Set ms in the second to 0
-			count_down_seconds <= 0;
+			count_down_seconds <= GAME_LENGTH_SECONDS;
 		end 
 		
 		else if (enable) begin											// If game is running
