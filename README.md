@@ -237,6 +237,9 @@ on clk event:
 
 ### Hit Logic
 
+**Parameters**
+* `NUM_HOLES`
+
 **Inputs**
 
 * `clk`
