@@ -46,7 +46,7 @@ module whack_a_mole_fsm #(
   end
 
   // ----------------- phase counter -----------------
-//  logic [PHW-1:0] phase_ms;
+  logic [PHW-1:0] phase_ms;
   always_ff @(posedge clk) begin
     if (reset_button_pressed) begin
       phase_ms <= PHW'(PERIOD_MS - 1);
