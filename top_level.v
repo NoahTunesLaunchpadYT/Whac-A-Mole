@@ -35,7 +35,6 @@ module top_level (
 									
 									// Outputs
 									.game_in_progress(game_in_progress),
-									.rst(rst),
 									.mole_clk(mole_clk)		
 									);
 	
