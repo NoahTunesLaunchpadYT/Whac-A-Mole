@@ -23,7 +23,7 @@ module rng #(
         lfsr <= {lfsr[9:1], feedback};
     end
 
-    assign random_value = lfsr + OFFSET;
+    assign random_value = (lfsr % MAX_VALUE) + OFFSET;
     // Assign random_value to your LSFR output + OFFSET to acheive the range 200 to 1223. Use continuous assign!
 
 endmodule
