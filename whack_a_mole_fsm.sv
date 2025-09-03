@@ -1,8 +1,8 @@
 module whack_a_mole_fsm #(
-  parameter int unsigned MOLE_UP_MS    = 1000,
-  parameter int unsigned MOLE_DOWN_MS  = 1000,
-  parameter int unsigned MAX_TIMER_MS  = 20000,
-  parameter int unsigned CLK_FREQ_HZ   = 50_000_000
+  parameter int unsigned MOLE_UP_MS     = 1000,
+  parameter int unsigned MOLE_DOWN_MS   = 1000,
+  parameter int unsigned MAX_TIMER_MS   = 20000,
+  parameter int unsigned CLKS_PER_MS    = 50000
 
 )(
   input  logic 										clk,
@@ -18,7 +18,7 @@ module whack_a_mole_fsm #(
   localparam int unsigned PERIOD_MS = MOLE_UP_MS + MOLE_DOWN_MS;
 
   localparam int PHW       = $clog2(PERIOD_MS);
-  localparam int MS_TICKS  = CLK_FREQ_HZ / 1000; 
+  localparam int MS_TICKS  = CLKS_PER_MS; 
   localparam int MSW_TICKS = $clog2(MS_TICKS);
 
   // ----------------- button edges -----------------
@@ -48,7 +48,7 @@ module whack_a_mole_fsm #(
   // ----------------- phase counter -----------------
   logic [PHW-1:0] phase_ms;
   always_ff @(posedge clk) begin
-    if (reset_button_pressed) begin
+    if (reset_button_pressed || start_btn_edge) begin
       phase_ms <= PHW'(PERIOD_MS - 1);
     end else if (ms_tick) begin
       if (phase_ms == 0)
@@ -65,16 +65,16 @@ module whack_a_mole_fsm #(
   // ----------------- FSM -----------------
   typedef enum logic [1:0] { INIT, MOLE_UP, MOLE_DOWN, GAMEOVER } state_type;
   state_type curr_state, next_state;
-	
+	assign start = curr_state;
 
   // next-state logic
   always_comb begin
 	next_state = curr_state;
     case (curr_state)
-      INIT:      next_state = (start_btn_edge) ? MOLE_UP : INIT;
+      INIT:      next_state = (start_button_pressed) ? MOLE_UP : INIT;
       MOLE_UP:   next_state = game_over ? GAMEOVER : (mole_up_window ? MOLE_UP : MOLE_DOWN);
       MOLE_DOWN: next_state = game_over ? GAMEOVER : (mole_up_window ? MOLE_UP : MOLE_DOWN);
-      GAMEOVER:  next_state = (start_btn_edge || reset_button_pressed) ? INIT : GAMEOVER;
+      GAMEOVER:  next_state = (reset_button_pressed) ? INIT : GAMEOVER;
 		default: next_state = INIT;
     endcase
   end

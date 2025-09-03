@@ -13,13 +13,27 @@ module hit_logic #(
 	output reg miss,
 	output reg non_full_clear_hit,
 	output reg full_clear_hit
-);			
+);	
+	// Synchronized switches - these are the ones to use in your logic
+	wire [NUM_HOLES - 1 : 0] switches_sync;
+
+	// Generate synchronizers for each switch (Adding synchronisation doesn't seem to do anything)
+	genvar j;
+	generate
+	  for (j = 0; j < NUM_HOLES; j = j + 1) begin : sync_gen
+			synchroniser switch_sync (
+				 .clk(clk),
+				 .x(switches[j]),        // Raw switch input
+				 .y(switches_sync[j])    // Synchronized output
+			);
+	  end
+	endgenerate
+
 	reg [NUM_HOLES - 1 : 0] next_leds = {NUM_HOLES{1'b0}};				// LED states next clk cycle
 	reg [NUM_HOLES - 1 : 0] prev_switch_states = {NUM_HOLES{1'b0}}; 	// Switch state in previous clk cycle
 	reg prev_moles_up = 1'b0;		// In MOLE_UP state in previous clk cycle
 	reg hit_flag = 1'b0;				// Async pulse to indicate hit happened
 	reg miss_flag = 1'b0; 			// Async pulse to indicate miss happened
-	reg sync_switches = {NUM_HOLES{1'b0}};
 	
 	// Check if we're current in the MOLE_UP state
 	wire moles_up_state = (mole_positions != {NUM_HOLES{1'b0}});
@@ -36,22 +50,25 @@ module hit_logic #(
 		
 		// Get the next LED state according to mole_positions
 		if (!prev_moles_up && moles_up_state) begin				// If rising edge
-			next_leds = mole_positions;									// Turn on moles
+			next_leds = mole_positions;								// Turn on moles
 		end
 		else if (prev_moles_up && !moles_up_state) begin		// If falling edge
-			next_leds = {NUM_HOLES{1'b0}}; 								// Turn off all LEDS
+			if (next_leds != {NUM_HOLES{1'b0}}) begin				// If there were some LEDs still on...
+				miss_flag = 1'b1;											// Count that as a miss
+			end
+			next_leds = {NUM_HOLES{1'b0}}; 							// Turn off all LEDS
 		end
 
 		for (i = 0; i < NUM_HOLES; i = i + 1) begin
-			// If switches have been flipped
-			if (switches[i] != prev_switch_states[i]) begin				
+			// If synchronous switches have been flipped
+			if (switches_sync[i] != prev_switch_states[i]) begin				
 				// Check to see if a mole was there
-				if (LEDs[i]) begin
-					hit_flag = 1'b1;
-					next_leds[i] = 1'b0;
+				if (LEDs[i]) begin										// If a mole was there...
+					hit_flag = 1'b1;										// Register a hit
+					next_leds[i] = 1'b0;									// Turn off the LED
 				end 
 				else begin
-					miss_flag = 1'b1;
+					miss_flag = 1'b1;										// If there was no mole there, register a miss
 				end
 			end
 		end
@@ -60,7 +77,7 @@ module hit_logic #(
 	always @(posedge clk) begin
 		// Set previous values for edge detection 
 		prev_moles_up <= moles_up_state;
-		prev_switch_states <= switches;
+		prev_switch_states <= switches_sync;
 		
 		if (game_in_progress) begin
 			// Update outputs
@@ -69,21 +86,21 @@ module hit_logic #(
 			// Sending hit signals
 			if (hit_flag) begin
 				if (next_leds=={NUM_HOLES{1'b0}}) begin			// If there are no more moles after this hit
-					full_clear_hit <= 1'b1;
-					non_full_clear_hit <= 1'b0;
+					full_clear_hit <= 1'b1;								// Register full clear
+					non_full_clear_hit <= 1'b0;						// Don't register non full clear
 				end 
 				else begin 
-					full_clear_hit <= 1'b0;
+					full_clear_hit <= 1'b0;								// If there are moles left after the hit, then not the last hit
 					non_full_clear_hit <= 1'b1;
 				end
 			end
-			else begin 
+			else begin 														// If not flags, don't register anything
 				full_clear_hit <= 1'b0;
 				non_full_clear_hit <= 1'b0;
 			end
 			
 			// Sending miss signals
-			if (miss_flag) begin
+			if (miss_flag) begin											// Miss 
 				miss <= 1'b1;
 			end
 			else begin

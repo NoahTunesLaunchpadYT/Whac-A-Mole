@@ -43,6 +43,6 @@ module timer #(
 			else begin 
 				 clk_cycles <= clk_cycles + 1;								// If a millisecond hasn't passed, keep counting
 			end
-		end 
+		end
 	end
 endmodule

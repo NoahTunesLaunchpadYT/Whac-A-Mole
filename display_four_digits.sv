@@ -9,7 +9,7 @@ module display_four_digits (
     output [6:0]  display3
 );
     /*** FSM Controller Code: ***/
-    enum { Initialise, Add3, Shift, Result } next_state, current_state = Initialise; // FSM states.
+    enum logic [1:0] { Initialise, Add3, Shift, Result } next_state, current_state = Initialise; // FSM states.
     
     logic init, add, done; // FSM outputs.
 

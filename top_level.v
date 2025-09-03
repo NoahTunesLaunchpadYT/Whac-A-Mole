@@ -6,26 +6,34 @@ module top_level (
    output [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 // Eight 7-segment displays
 );
 	
-	localparam 	NUM_HOLES = 17,
+	localparam 	NUM_HOLES = 18,
 					NUM_MOLES = 3,
-					MOLE_UP_MS = 1000,
+					MOLE_UP_MS = 2000,
 					MOLE_DOWN_MS = 1000,
 					GAME_LENGTH_SECONDS = 20,
 					CLKS_PER_MS = 50000,
-					DEBOUNCE_DELAY_COUNTS = 2500;
+					DEBOUNCE_DELAY_COUNTS = 2500,
+					MS_PER_SECOND = 1000,
+					MAX_COMBO_COUNT = 99,
+					MAX_SCORE = 9999;
 
 	// Intermediate Wires
 	
 	wire rst, game_in_progress, mole_clk;														// FSM wires
-	wire timer_seconds, timer_milliseconds;													// Timer wires
-	wire start_button_pressed, reset_button_pressed, start_button, reset_button;	// Debouncer wires
+	wire [$clog2(GAME_LENGTH_SECONDS)-1:0] timer_seconds;
+	wire [$clog2(GAME_LENGTH_SECONDS*MS_PER_SECOND)-1:0] timer_milliseconds;		// Timer wires
+	wire start_button_pressed;
 	wire [NUM_HOLES-1:0] mole_positions;														// Mole Generator
 	wire miss, non_full_clear_hit, full_clear_hit;											// Hit logic
-	wire combo_count;																					// Combo Counter
-	wire score;																							// Score Counter
+	wire [$clog2(MAX_COMBO_COUNT)-1:0] combo_count;											// Combo Counter
+	wire [$clog2(MAX_SCORE)-1:0] score;																							// Score Counter
 	
 	// Falgun
-	whack_a_mole_fsm			#(.MOLE_UP_MS(MOLE_UP_MS), .MOLE_DOWN_MS(MOLE_DOWN_MS)) 
+	whack_a_mole_fsm			#(	.MOLE_UP_MS(MOLE_UP_MS), 
+										.MOLE_DOWN_MS(MOLE_DOWN_MS),
+										.MAX_TIMER_MS(GAME_LENGTH_SECONDS*1000),
+										.CLKS_PER_MS(CLKS_PER_MS)
+										) 
 									u_fsm(
 									// Inputs
 									.clk(CLOCK_50),
@@ -35,8 +43,9 @@ module top_level (
 									
 									// Outputs
 									.game_in_progress(game_in_progress),
-									.mole_clk(mole_clk)		
+									.mole_clk(mole_clk)
 									);
+									
 	
 	debounce       			#(.DELAY_COUNTS(DEBOUNCE_DELAY_COUNTS)) 
 									u_start_button_debounce(
@@ -62,7 +71,7 @@ module top_level (
 									// Inputs:
 									.clk(CLOCK_50),
 									.rst(rst),
-									.enable(1),
+									.enable(game_in_progress),
 									// Outputs
 									.count_down_seconds(timer_seconds),
 									.count_down_milliseconds(timer_milliseconds)
