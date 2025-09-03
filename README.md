@@ -57,7 +57,6 @@ Here’s a cleaned-up, well-structured version of your notes. I’ve standardise
 **Inputs**
 
 * `clk`
-* `timer_seconds`
 * `timer_milliseconds`
 * `start_button_pressed`
 * `reset_button_pressed`
@@ -123,7 +122,7 @@ on clk event:
 
 * `clk`
 * `rst`
-* `game_in_progress` (as `timer_enable`)
+* `game_in_progress` (as `enable`)
 
 **Outputs**
 
