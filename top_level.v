@@ -21,8 +21,8 @@ module top_level (
 	wire start_button_pressed, reset_button_pressed, start_button, reset_button;	// Debouncer wires
 	wire [NUM_HOLES-1:0] mole_positions;														// Mole Generator
 	wire miss, non_full_clear_hit, full_clear_hit;											// Hit logic
-	wire combo_count																					// Combo Counter
-	wire score																							// Score Counter
+	wire combo_count;																					// Combo Counter
+	wire score;																							// Score Counter
 	
 	// Falgun
 	fsm			#(.MOLE_UP_MS(MOLE_UP_MS), .MOLE_DOWN_MS(MOLE_DOWN_MS)) 
