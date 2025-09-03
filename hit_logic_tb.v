@@ -33,7 +33,7 @@ module hit_logic_tb;
 	end
 	
 	initial begin  					// Run the following code starting from the beginning of the simulation:
-		cycles_per_clock = 50;
+		cycles_per_clock = 20;
 
 		$dumpfile("waveform.vcd");  // Tell the simulator to dump variables into the 'waveform.vcd' file during the simulation. Required to produce a waveform .vcd file.
 		$dumpvars();                // Also required to tell simulator to dump variables into a waveform (with filename specified above).
@@ -82,8 +82,6 @@ module hit_logic_tb;
 
 		#(10*cycles_per_clock)
 		SW[17] = 0;
-
-		#(100_000)
 
 		$finish();
 	end

@@ -6,8 +6,9 @@ module combo_counter(
     input         reset,                // HIGH when restarting the game - clears the current count
     output [6:0]  combo_val             // The current combo count value
 	);
-    reg [6:0] reg_combo_val;
+    reg [6:0] reg_combo_val = 0;
     localparam max_combo = 7'd99;
+	 
     always @(posedge clk) begin
         if (reset || miss) begin
             reg_combo_val <= 7'd0;
