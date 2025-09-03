@@ -8,8 +8,8 @@ module timer #(
     input                       					rst,
     input                       					enable,
 	 
-    output [$clog2(GAME_LENGTH_SECONDS)-1:0]	count_down_seconds,
-    output [$clog2(1000)-1:0]						count_down_milliseconds
+    output reg [$clog2(GAME_LENGTH_SECONDS)-1:0]	count_down_seconds,
+    output reg [$clog2(1000)-1:0]						count_down_milliseconds
 );
 
 	localparam MS_PER_SECOND = 1000;

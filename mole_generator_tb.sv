@@ -1,8 +1,5 @@
 `timescale 1ns/1ns
 
-<<<<<<< HEAD
-module 
-=======
 module mole_generator_tb;
 
    reg clk, mole_clk;
@@ -42,4 +39,3 @@ module mole_generator_tb;
    end
 
 endmodule
->>>>>>> e153fc6872a6298f1c98efc5185693c177cf1c36

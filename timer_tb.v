@@ -9,7 +9,7 @@ module timer_tb;
 	reg [7:0] 	clocks_per_ms;
 	
 	wire [$clog2(20)-1:0]	count_down_seconds;
-	wire [$clog2(1000)-1:0]						count_down_milliseconds;
+	wire [$clog2(1000)-1:0]	count_down_milliseconds;
 	
 	timer #(.GAME_LENGTH_SECONDS(20), .CLKS_PER_MS(50000)) DUT (
 	  .clk(CLOCK_50),
