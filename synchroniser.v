@@ -16,4 +16,3 @@ module synchroniser (input clk, x, output y);
     end
     assign y = x_q1;
 endmodule
-

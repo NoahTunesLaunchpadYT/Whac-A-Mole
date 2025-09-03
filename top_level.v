@@ -57,7 +57,7 @@ module top_level (
 									.button_pressed(reset_button_pressed)
 									);
 	
-
+	// Noah
 	fsm_timer 					#(.GAME_LENGTH_SECONDS(GAME_LENGTH_SECONDS), .CLK_PER_MS(CLK_PER_MS))
 									u_fsm_timer(
 									// Inputs:
@@ -65,8 +65,8 @@ module top_level (
 									.reset(rst),
 									.enable(game_in_progress),
 									// Outputs
-									.timer_seconds(timer_seconds),
-									.timer_milliseconds(timer_milliseconds)
+									.count_down_seconds(timer_seconds),
+									.count_down_milliseconds(timer_milliseconds)
 									);
 
 	// Daniel 
