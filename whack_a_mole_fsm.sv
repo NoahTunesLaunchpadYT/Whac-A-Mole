@@ -24,7 +24,7 @@ module whack_a_mole_fsm #(
 				phase_ms <= PERIOD_MS;
 			else
 				phase_ms <= phase_ms - 1;
-	end: 
+	end:  phase_counter
 	
 	
 		
@@ -59,20 +59,21 @@ module whack_a_mole_fsm #(
 			curr_state<= next_state;	
 	end: reset_and_state_logic
 	
+	
 		// Mole up and down window calc (slang for calculator gang)
 	logic mole_up;
-	assign mole_up = (phase > MOLE_DOWN_MS);
+	assign mole_up = (phase_ms > MOLE_DOWN_MS);
 		
-	
+		
 		// Next state logic
 	always_comb begin: next_state_logic
 		unique case(curr_state)
 			INIT: begin
-				next_state = (start_btn_edge) MOLE_UP ? INIT;
+				next_state = (start_btn_edge) ? MOLE_UP : INIT;
 			end
 			
 			MOLE_UP: begin
-				next_state = mole_up ? MOLE_UP : MOLE_DOWN
+				next_state = mole_up ? MOLE_UP : MOLE_DOWN;
 			end
 			
 			MOLE_DOWN: begin
@@ -80,7 +81,7 @@ module whack_a_mole_fsm #(
 					next_state = GAMEOVER;
 				
 				else
-					next_state = mole_up ? MOLE_UP : MOLE_DOWN
+					next_state = mole_up ? MOLE_UP : MOLE_DOWN;
 			end
 			
 			
