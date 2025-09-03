@@ -3,6 +3,7 @@
 *.qsf
 *.qsf.bak
 *.v.bak
+# *.bak
 *.rpt
 *.summary
 *.smsg
