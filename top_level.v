@@ -29,7 +29,6 @@ module top_level (
 									u_fsm(
 									// Inputs
 									.clk(CLOCK_50),
-									.timer_seconds(timer_seconds),
 									.timer_milliseconds(timer_milliseconds),
 									.start_button_pressed(start_button_pressed), // Active Low (Not high)
 									.reset_button_pressed(reset_button_pressed), // Active Low (Not high)
