@@ -101,6 +101,6 @@ module combo_counter_tb;
 		#(3*cycles_per_clock)
 		non_full_clear_hit = 0;
 		
-		$finish();
+		// $finish();
 	end
 endmodule

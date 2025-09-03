@@ -19,6 +19,7 @@ module hit_logic #(
 	reg prev_moles_up = 1'b0;		// In MOLE_UP state in previous clk cycle
 	reg hit_flag = 1'b0;				// Async pulse to indicate hit happened
 	reg miss_flag = 1'b0; 			// Async pulse to indicate miss happened
+	reg sync_switches = {NUM_HOLES{1'b0}};
 	
 	// Check if we're current in the MOLE_UP state
 	wire moles_up_state = (mole_positions != {NUM_HOLES{1'b0}});
