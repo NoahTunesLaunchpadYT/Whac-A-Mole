@@ -6,12 +6,12 @@ module top_level (
    output [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 // Eight 7-segment displays
 );
 	
-	localparam 	NUM_HOLES = 18,
+	localparam 	NUM_HOLES = 17,
 					NUM_MOLES = 3,
 					MOLE_UP_MS = 1000,
 					MOLE_DOWN_MS = 1000,
 					GAME_LENGTH_SECONDS = 20,
-					CLK_PER_MS = 50000,
+					CLKS_PER_MS = 50000,
 					DEBOUNCE_DELAY_COUNTS = 2500;
 
 	// Intermediate Wires
@@ -31,7 +31,7 @@ module top_level (
 									.clk(CLOCK_50),
 									.timer_milliseconds(timer_milliseconds),
 									.start_button_pressed(start_button_pressed), // Active Low (Not high)
-									.reset_button_pressed(reset_button_pressed), // Active Low (Not high)
+									.reset_button_pressed(rst), // Active Low (Not high)
 									
 									// Outputs
 									.game_in_progress(game_in_progress),
@@ -42,7 +42,7 @@ module top_level (
 									u_start_button_debounce(
 									// Inputs
 									.clk(CLOCK_50),
-									.button(KEY[1]),
+									.button(~KEY[1]),
 									//Output
 									.button_pressed(start_button_pressed)
 									);
@@ -51,18 +51,18 @@ module top_level (
 									u_reset_button_debounce(
 									// Inputs
 									.clk(CLOCK_50),
-									.button(KEY[0]),
+									.button(~KEY[0]),
 									//Output
-									.button_pressed(reset_button_pressed)
+									.button_pressed(rst)
 									);
 	
 	// Noah
-	fsm_timer 					#(.GAME_LENGTH_SECONDS(GAME_LENGTH_SECONDS), .CLK_PER_MS(CLK_PER_MS))
-									u_fsm_timer(
+	timer 						#(.GAME_LENGTH_SECONDS(GAME_LENGTH_SECONDS), .CLKS_PER_MS(CLKS_PER_MS))
+									u_timer(
 									// Inputs:
 									.clk(CLOCK_50),
-									.reset(rst),
-									.enable(game_in_progress),
+									.rst(rst),
+									.enable(1),
 									// Outputs
 									.count_down_seconds(timer_seconds),
 									.count_down_milliseconds(timer_milliseconds)
@@ -88,7 +88,7 @@ module top_level (
 									.switches(SW),
 									.game_in_progress(game_in_progress),
 									// Outputs:
-									.leds(LEDR),
+									.LEDs(LEDR),
 									.miss(miss),
 									.non_full_clear_hit(non_full_clear_hit),
 									.full_clear_hit(full_clear_hit)
@@ -113,25 +113,25 @@ module top_level (
 								.score_increase(combo_count),
 								
 								// Ouput
-								.score(score)
+								.score_count(score_count)
 								);
 	
 
-	display_2digit 		u_timer_display(
+	display_two_digits 	u_timer_display(
 								.clk(CLOCK_50),
 								.value(timer_seconds),
 								.display0(HEX6),
 								.display1(HEX7),
 								);
 	
-	displeray_2digit 		u_combo_display(
+	display_two_digits 	u_combo_display(
 								.clk(CLOCK_50),
 								.value(combo_count),
 								.display0(HEX4),
 								.display1(HEX5)
-		);
+								);
 	
-	display_4digit 		u_score_display(
+	display_four_digits  u_score_display(
 								.clk(CLOCK_50),
 								.value(score),
 								.display0(HEX0),

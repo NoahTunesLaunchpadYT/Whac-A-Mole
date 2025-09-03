@@ -11,7 +11,7 @@ module whack_a_mole_fsm #(
   input 	logic [$clog2(MAX_TIMER_MS)-1:0] 	timer_milliseconds,
                
   output logic game_in_progress,
-  output logic mole_clk,
+  output logic mole_clk
 );
 
   // ----------------- constants -----------------
@@ -59,7 +59,7 @@ module whack_a_mole_fsm #(
   end
 
   // ----------------- predicates -----------------
-//	assign mole_up_window = (phase_ms >= MOLE_DOWN_MS[PHW-1:0]);
+  logic mole_up_window;
   wire game_over = (timer_milliseconds <= 1);  // stop game when one full cycle done
 
   // ----------------- FSM -----------------
@@ -95,7 +95,6 @@ module whack_a_mole_fsm #(
   always_comb begin
     game_in_progress = (curr_state == MOLE_UP) || (curr_state == MOLE_DOWN);
     mole_clk         = (curr_state == MOLE_UP);
-    dbg_state        = curr_state;
   end
 
 endmodule
