@@ -2,7 +2,7 @@
 module display_four_digits (
     input         rst,
     input         clk,
-    input  [10:0] value,
+    input  [13:0] value,
     output [6:0]  display0,
     output [6:0]  display1,
     output [6:0]  display2,
@@ -21,7 +21,7 @@ module display_four_digits (
     always_comb begin : double_dabble_fsm_next_state_logic
         unique case (current_state)
             Initialise: next_state = Add3;
-            Shift:      next_state = count == 10 ? Result : Add3; // After 11 iterations, exit out of the loop
+            Shift:      next_state = count == 13 ? Result : Add3; // After 11 iterations, exit out of the loop
             Add3:       next_state = Shift;
             Result:     next_state = Initialise;
             // Add cases for the other states... (No inputs on those transitions)
@@ -68,11 +68,11 @@ module display_four_digits (
     // essentially a 27-bit long, 1-bit wide shift-register, starting from the 11 input bits through to the 4 bits of each BCD digit (4*4=16, 16+11=27).
     // We shift in the Shift state, add 3 to BCD digits greater than 4 in the Add3 state, and initialise the shift-register values in the Initialise state.
     logic [3:0]  bcd0, bcd1, bcd2, bcd3; // Do NOT change.
-    logic [10:0] temp_value; // Do NOT change.
+    logic [13:0] temp_value; // Do NOT change.
         
     always_ff @(posedge clk) begin : double_dabble_shiftreg
         if (rst) begin
-           {bcd3, bcd2, bcd1, bcd0, temp_value} <= {27'b0};
+           {bcd3, bcd2, bcd1, bcd0, temp_value} <= {30'b0};
         end
         else if (init) begin // Initialise: set bcd values to 0 and temp_value to value.
             {bcd3, bcd2, bcd1, bcd0, temp_value} <= {16'b0, value}; // A nice usage of the concat operator on both LHS and RHS!

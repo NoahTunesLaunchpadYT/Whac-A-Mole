@@ -1,7 +1,7 @@
 module combo_counter(
     input         clk,                  // DE2-115's 50MHz clock signal
-    input         miss,                 // HIGH if a mole has been missed or incorrectly hit
-    input         non_full_clear_hit,   // HIGH if a mole has been hit (not the last mole on the board)
+			 input         miss,                 // HIGH if a mole has been missed or incorrectly hit
+			 input         non_full_clear_hit,   // HIGH if a mole has been hit (not the last mole on the board)
     input         full_clear_hit,       // HIGH if the mole hit was the last one on the boards
     input         rst,                // HIGH when restarting the game - clears the current count
     output [6:0]  combo_count           // The current combo count value

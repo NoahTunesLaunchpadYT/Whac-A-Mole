@@ -120,9 +120,10 @@ module top_level (
 								// Input
 								.clk(CLOCK_50),
 								.score_increase(combo_count),
+								.rst(rst),
 								
 								// Ouput
-								.score_count(score_count)
+								.score_count(score)
 								);
 	
 

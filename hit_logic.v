@@ -21,10 +21,10 @@ module hit_logic #(
 	genvar j;
 	generate
 	  for (j = 0; j < NUM_HOLES; j = j + 1) begin : sync_gen
-			synchroniser switch_sync (
+			debounce switch_sync (
 				 .clk(clk),
-				 .x(switches[j]),        // Raw switch input
-				 .y(switches_sync[j])    // Synchronized output
+				 .button(switches[j]),        // Raw switch input
+				 .button_pressed(switches_sync[j])    // Synchronized output
 			);
 	  end
 	endgenerate
@@ -61,9 +61,9 @@ module hit_logic #(
 
 		for (i = 0; i < NUM_HOLES; i = i + 1) begin
 			// If synchronous switches have been flipped
-			if (switches_sync[i] != prev_switch_states[i]) begin				
+			if (switches_sync[i] != prev_switch_states[i]) begin	// If you hit a hole			
 				// Check to see if a mole was there
-				if (LEDs[i]) begin										// If a mole was there...
+				if (next_leds[i]) begin										// If a mole was there...
 					hit_flag = 1'b1;										// Register a hit
 					next_leds[i] = 1'b0;									// Turn off the LED
 				end 
