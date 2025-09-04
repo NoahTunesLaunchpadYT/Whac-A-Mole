@@ -1,7 +1,3 @@
-Here’s a cleaned-up, well-structured version of your notes. I’ve standardised headings, indentation, and bullet styles for clarity, while preserving all details.
-
----
-
 # Git Setup Instructions
 
 1. **Clone the repository**
