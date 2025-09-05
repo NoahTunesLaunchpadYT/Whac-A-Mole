@@ -14,8 +14,8 @@ module timer #(
 
 	localparam MS_PER_SECOND = 1000;
    
-	reg [15:0] clk_cycles;
-   reg [10:0] ms_within_second;
+	reg [$clog2(CLKS_PER_MS)-1:0] clk_cycles;
+   reg [$clog2(MS_PER_SECOND)-1:0] ms_within_second;
 	
 	assign count_down_milliseconds = MS_PER_SECOND * count_down_seconds + (MS_PER_SECOND - ms_within_second - 1);
 

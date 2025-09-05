@@ -8,7 +8,7 @@ module combo_counter_tb;
 	reg 			reset;
    reg [7:0] cycles_per_clock;
 
-	wire [6:0]	combo_val;
+	wire [6:0]	combo_count;
 	
 	combo_counter DUT (
 	  .clk(CLOCK_50),
@@ -16,7 +16,7 @@ module combo_counter_tb;
 	  .non_full_clear_hit(non_full_clear_hit),
 	  .full_clear_hit(full_clear_hit),
 	  .reset(reset),
-	  .combo_val(combo_val)
+	  .combo_count(combo_count)
 	);
 	
 
