@@ -17,6 +17,4 @@ module seven_seg (
             default:  segments = 7'b1111111; // 9+
         endcase
     end
-    // Your `always @(*)` block and case block here!
-
 endmodule
