@@ -13,8 +13,8 @@ module debounce #(
   
 
   /*** Fill in the following scaffold: ***/
-  reg prev_button;
-  reg [11:0] count;
+  reg prev_button = 1'b0;
+  reg [$clog2(DELAY_COUNTS) : 0] count = {$clog2(DELAY_COUNTS){1'b0}};
   // Set the count flip-flop:
   always @(posedge clk) begin
       if (button_sync != prev_button) begin
@@ -28,25 +28,25 @@ module debounce #(
       end
   end
 
-  // Set the prev_button flip-flop:
-  always @(posedge clk) begin
-    if (button_sync != prev_button) begin
-      prev_button <= button_sync;
-    end
-    else begin
-      prev_button <= prev_button;
-    end
-  end
+	// Set the prev_button flip-flop:
+	always @(posedge clk) begin
+		 if (button_sync != prev_button) begin
+			prev_button <= button_sync;
+		 end
+		 else begin
+			prev_button <= prev_button;
+		 end
+	end
 
-  // Set the button_pressed flip-flop:
-  always @(posedge clk) begin
-    if (button_sync == prev_button && count == DELAY_COUNTS) begin
-      button_pressed <= prev_button;
-    end
-    else begin
-      button_pressed <= button_pressed;
-    end
-  end
+	// Set the button_pressed flip-flop:
+	always @(posedge clk) begin
+		if (button_sync == prev_button && count == DELAY_COUNTS) begin
+			button_pressed <= prev_button;
+		end
+		else begin
+			button_pressed <= button_pressed;
+		end
+	end
 
 endmodule
 

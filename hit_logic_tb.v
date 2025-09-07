@@ -1,29 +1,31 @@
 `timescale 1ns/1ns
 
 module hit_logic_tb;
-	localparam NUM_HOLES = 18;
+	localparam NUM_HOLES = 6;
+	localparam CYCLES_PER_CLOCK = 20;
 	
 	reg         					CLOCK_50;              	// DE2-115's 50MHz clock
 	reg	[NUM_HOLES - 1 : 0]	SW;                    	// The 4 push buttons
 	reg 	[NUM_HOLES - 1 : 0]	mole_positions;			
 	reg 	game_in_progress;
-   reg [7:0] cycles_per_clock;
 	
 	wire 	[NUM_HOLES - 1 : 0]	LEDs;
 	wire 	miss;
 	wire	non_full_clear_hit;
 	wire	full_clear_hit;
 	
-	
-	hit_logic #(.NUM_HOLES(NUM_HOLES)) DUT (
-	  .clk(CLOCK_50),
-	  .mole_positions(mole_positions),
-	  .switches(SW),
-	  .game_in_progress(game_in_progress),
-	  .LEDs(LEDs),
-	  .miss(miss),
-	  .non_full_clear_hit(non_full_clear_hit),
-	  .full_clear_hit(full_clear_hit)
+	hit_logic #(.NUM_HOLES(NUM_HOLES), 
+					.DEBOUNCE_DELAY(2)
+					) DUT (
+		.clk(CLOCK_50),
+		.mole_positions(mole_positions),
+		.switches(SW),
+		.game_in_progress(game_in_progress),
+		.LEDs(LEDs),
+		.miss(miss),
+		.non_full_clear_hit(non_full_clear_hit),
+		.full_clear_hit(full_clear_hit)
+
 	);
 	
 
@@ -33,55 +35,50 @@ module hit_logic_tb;
 	end
 	
 	initial begin  					// Run the following code starting from the beginning of the simulation:
-		cycles_per_clock = 20;
-
 		$dumpfile("waveform.vcd");  // Tell the simulator to dump variables into the 'waveform.vcd' file during the simulation. Required to produce a waveform .vcd file.
 		$dumpvars();                // Also required to tell simulator to dump variables into a waveform (with filename specified above).
 		
-		#(10*cycles_per_clock)		
-		
+		// Initialise variables 
+		SW = {NUM_HOLES{1'b0}};
+		mole_positions = {NUM_HOLES{1'b0}};
+		game_in_progress = 1'b0;
+
+		#(3*CYCLES_PER_CLOCK)
+
+		// Test while game_in_progress is false, no outputs should change
+		mole_positions = 6'b101000; // Set mole positions
+		#(3*CYCLES_PER_CLOCK)
+		SW = 6'b100000;		// Hit mole
+		#(3*CYCLES_PER_CLOCK)
+		SW = 6'b110000;		// Miss mole
+		#(3*CYCLES_PER_CLOCK)
+		SW = 6'b111000;		// Hit last mole
+		#(3*CYCLES_PER_CLOCK)
+		mole_positions = 6'b000000;		// moles go down
+		#(3*CYCLES_PER_CLOCK)
+
+		// Now test with game_in_progress on
+		SW = 6'b000000;		// reset switches
+		#(10*CYCLES_PER_CLOCK)
 		game_in_progress = 1'b1;
-		mole_positions = 18'b101010000000000000;
-		SW = {18{1'b0}};
-		
-		#(10*cycles_per_clock)
-		SW[17] = 1;
-	
-		#(10*cycles_per_clock)
-		SW[15] = 1;
-		
-		#(10*cycles_per_clock)
-		SW[13] = 1;
-		
-		#(10*cycles_per_clock)
-		SW[16] = 1;
-		
-		#(20*cycles_per_clock)
-		mole_positions = 18'b000000000000000000;
-
-		#(20*cycles_per_clock)
-		mole_positions = 18'b111000000000000000;	
-	
-		#(10*cycles_per_clock)
-		SW[17] = 0;
-		
-		#(10*cycles_per_clock)
-		SW[17] = 1;
-		
-		#(10*cycles_per_clock)
-		SW[16] = 0;
-
-		#(10*cycles_per_clock)
-		SW[15] = 0;
-		
-		#(20*cycles_per_clock)
-		mole_positions = 18'b000000000000000000;
-
-		#(20*cycles_per_clock)
-		mole_positions = 18'b001110000000000000;
-
-		#(10*cycles_per_clock)
-		SW[17] = 0;
+		#(10*CYCLES_PER_CLOCK)
+		mole_positions = 6'b101000; // Set mole positions
+		#(10*CYCLES_PER_CLOCK)
+		SW = 6'b100000;		// Hit mole
+		#(10*CYCLES_PER_CLOCK)
+		SW = 6'b110000;		// Miss mole
+		#(10*CYCLES_PER_CLOCK)
+		SW = 6'b111000;		// Hit last mole
+		#(10*CYCLES_PER_CLOCK)
+		mole_positions = 6'b000000;		// moles goes down
+		#(10*CYCLES_PER_CLOCK)
+		mole_positions = 6'b110000;		// moles comes up
+		#(10*CYCLES_PER_CLOCK)
+		SW = 6'b011000;						// Checking falling edge works too
+		#(10*CYCLES_PER_CLOCK)
+		SW = 6'b000000;						// Simultaneous Hit and miss moles
+		#(10*CYCLES_PER_CLOCK)
+		mole_positions = 6'b000000;		// moles goes down, should trigger a miss
 
 		$finish();
 	end
