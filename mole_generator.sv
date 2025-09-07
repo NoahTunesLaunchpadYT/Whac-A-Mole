@@ -5,9 +5,9 @@ module mole_generator #(
     input clk,
     input mole_clk,
     output reg [NUM_HOLES-1:0] mole_positions,
-	 output reg [$clog2(NUM_HOLES) - 1 : 0] mole_position1,
-	 output reg [$clog2(NUM_HOLES) - 1 : 0] mole_position2,
-	 output reg [$clog2(NUM_HOLES) - 1 : 0] mole_position3
+	 output reg [$clog2(NUM_HOLES)-1:0] mole_position1,
+	 output reg [$clog2(NUM_HOLES)-1:0] mole_position2,
+	 output reg [$clog2(NUM_HOLES)-1:0] mole_position3
 );
 
 	wire [$clog2(NUM_HOLES) - 1 : 0] mole_positions_array [NUM_MOLES];
@@ -19,11 +19,11 @@ module mole_generator #(
 
 	genvar i;
 	generate
-		for (i = 0; i < NUM_MOLES; i = i + 1) begin : rng_modules_generation
+		for (i=0; i<NUM_MOLES; i=i+1) begin: rng_modules_generation
 			rng #(
 				 .OFFSET(0),
-				 .MAX_VALUE(NUM_HOLES - 1),
-				 .SEED(123 + (i * 5))
+				 .MAX_VALUE(NUM_HOLES-1),
+				 .SEED(123+(i*5))
 			) u_rng (
 				 .clk(clk),
 				 .random_value(mole_positions_array[i])
@@ -35,7 +35,7 @@ module mole_generator #(
 		prev_mole_clk <= mole_clk;
 
 		if ((prev_mole_clk == 0) && (mole_clk == 1)) begin
-			for (int j = 0; j < NUM_MOLES; j++) begin
+			for (int j=0; j<NUM_MOLES; j++) begin
 				 mole_positions[mole_positions_array[j]] <= 1'b1;
 			end
 		end
@@ -47,4 +47,3 @@ module mole_generator #(
 		end
 	end
 endmodule
-    
