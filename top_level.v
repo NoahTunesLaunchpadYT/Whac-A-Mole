@@ -131,7 +131,7 @@ module top_level (
 								.clk(CLOCK_50),
 								.value(timer_seconds),
 								.display0(HEX6),
-								.display1(HEX7),
+								.display1(HEX7)
 								);
 	
 	display_two_digits 	u_combo_display(
@@ -147,7 +147,7 @@ module top_level (
 								.display0(HEX0),
 								.display1(HEX1),
 								.display2(HEX2),
-								.display3(HEX3),
+								.display3(HEX3)
 								);
  
 
