@@ -8,6 +8,7 @@ module whack_a_mole_fsm_tb;
   parameter PERIOD_MS_TB     = MOLE_UP_MS_TB + MOLE_DOWN_MS_TB;
   parameter MAX_TIMER_MS_TB  = 200;
   parameter CYCLES_PER_MS    = 50;   // fixed time mapping
+  parameter CLKS_PER_MS_TB   = 500;
 
   // clog2 helper (Verilog-2001)
   function integer clog2;
@@ -36,21 +37,37 @@ module whack_a_mole_fsm_tb;
   wire 			  mole_up_window;
   wire [4:0]	  phase_ms;
   // DUT
-  whack_a_mole_fsm #(
-    .MOLE_UP_MS    (MOLE_UP_MS_TB),
+//  whack_a_mole_fsm #(
+//    .MOLE_UP_MS    (MOLE_UP_MS_TB),
+//    .MOLE_DOWN_MS  (MOLE_DOWN_MS_TB),
+//    .MAX_TIMER_MS  (MAX_TIMER_MS_TB)
+//  ) dut (
+//    .clk(clk),
+//    .timer_milliseconds(timer_milliseconds),
+//    .reset_button_pressed(reset_button_pressed),
+//    .start_button_pressed(start_button_pressed),
+//    .game_in_progress(game_in_progress),
+//    .mole_clk(mole_clk),
+//	 .dbg_state(dbg_state),
+//	 .mole_up_window(mole_up_window),
+//	 .phase_ms(phase_ms)
+//  );
+//  
+	whack_a_mole_fsm #(
+	 .MOLE_UP_MS    (MOLE_UP_MS_TB),
     .MOLE_DOWN_MS  (MOLE_DOWN_MS_TB),
-    .MAX_TIMER_MS  (MAX_TIMER_MS_TB)
-  ) dut (
-    .clk(clk),
-    .timer_milliseconds(timer_milliseconds),
-    .reset_button_pressed(reset_button_pressed),
+    .MAX_TIMER_MS  (MAX_TIMER_MS_TB),
+	 .CLKS_PER_MS   ()
+
+	) dut (
+		.clk(clk),
+		.reset_button_pressed(reset_button_pressed),
     .start_button_pressed(start_button_pressed),
-    .game_in_progress(game_in_progress),
-    .mole_clk(mole_clk),
-	 .dbg_state(dbg_state),
-	 .mole_up_window(mole_up_window),
-	 .phase_ms(phase_ms)
-  );
+	 .timer_milliseconds(timer_milliseconds),
+	 .game_in_progress(game_in_progress),
+    .mole_clk(mole_clk)
+	 
+	);
 
   // Phase counter (counts down)
   reg [PHW-1:0] phase_tb;

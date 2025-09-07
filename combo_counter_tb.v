@@ -15,8 +15,8 @@ module combo_counter_tb;
 	  .miss(miss),
 	  .non_full_clear_hit(non_full_clear_hit),
 	  .full_clear_hit(full_clear_hit),
-	  .reset(reset),
-	  .combo_val(combo_val)
+	  .rst(reset),
+	  .combo_count(combo_val)
 	);
 	
 
