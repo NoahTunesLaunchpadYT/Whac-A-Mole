@@ -26,7 +26,7 @@ module top_level (
 	wire [NUM_HOLES-1:0] mole_positions;														// Mole Generator
 	wire miss, non_full_clear_hit, full_clear_hit;											// Hit logic
 	wire [$clog2(MAX_COMBO_COUNT)-1:0] combo_count;											// Combo Counter
-	wire [$clog2(MAX_SCORE)-1:0] score;																							// Score Counter
+	wire [$clog2(MAX_SCORE)-1:0] score;															// Score Counter
 	
 	// Falgun
 	whack_a_mole_fsm			#(	.MOLE_UP_MS(MOLE_UP_MS), 

@@ -2,7 +2,8 @@
 /* This directive (`) specifies simulation <time unit>/<time precision>. */
 
 module hit_logic #(
-	parameter NUM_HOLES = 18
+	parameter NUM_HOLES = 18,
+	parameter DEBOUNCE_DELAY = 2500
 )	(
 	input clk,
 	input [NUM_HOLES - 1 : 0] mole_positions,
@@ -21,7 +22,7 @@ module hit_logic #(
 	genvar j;
 	generate
 	  for (j = 0; j < NUM_HOLES; j = j + 1) begin : sync_gen
-			debounce switch_sync (
+			debounce #(.DELAY_COUNTS(DEBOUNCE_DELAY)) switch_sync (
 				 .clk(clk),
 				 .button(switches[j]),        // Raw switch input
 				 .button_pressed(switches_sync[j])    // Synchronized output

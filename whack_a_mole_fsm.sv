@@ -63,7 +63,12 @@ module whack_a_mole_fsm #(
   wire game_over = (timer_milliseconds <= 1);  // stop game when one full cycle done
 
   // ----------------- FSM -----------------
-  typedef enum logic [1:0] { INIT, MOLE_UP, MOLE_DOWN, GAMEOVER } state_type;
+	typedef enum logic [1:0] { 
+		INIT, MOLE_UP, MOLE_DOWN, GAMEOVER 
+	} state_type /* synthesis syn_encoding = "gray" */;
+  
+  
+  
   state_type curr_state, next_state;
 	assign start = curr_state;
 
