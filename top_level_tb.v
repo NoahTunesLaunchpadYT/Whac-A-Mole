@@ -7,9 +7,14 @@ module top_level_tb;
 	reg  [17:0] SW;
    wire [17:0] LEDR;
    wire [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7;
-
+   
    wire [17:0] mole_positions;
 	wire mole_clk;
+	wire [1:0] fsm_state_v;                   // small vector to watch in waves
+	assign fsm_state_v = DUT.u_fsm.curr_state; // curr_state is 2 bits in your FSM
+	wire mole_up_window = DUT.u_fsm.mole_up_window;
+	wire [1:0] phase_ms = DUT.u_fsm.phase_ms;
+	
    wire [3:0]  mole_position1, mole_position2, mole_position3;
 	parameter CLKS_PER_MS_TB   = 5;
    top_level #(
@@ -49,8 +54,8 @@ module top_level_tb;
    initial begin
       $display("=== Simulation started ===");
 
-      $monitor("t=%0t ns | KEY=%b | SW=%b | mole_clk=%b | mole_positions=%b | mole1=%0d mole2=%0d mole3=%0d | Score=%0d | Combo=%0d",
-               $time, KEY, SW, mole_clk, mole_positions, mole_position1, mole_position2, mole_position3,
+      $monitor("t=%0t ns | KEY=%b | fsm_state_v=%b | phase_ms=%b | mole_up_window=%b | SW=%b | mole_clk=%b | mole_positions=%b | mole1=%0d mole2=%0d mole3=%0d | Score=%0d | Combo=%0d",
+               $time, KEY, fsm_state_v, phase_ms, mole_up_window, SW, mole_clk, mole_positions, mole_position1, mole_position2, mole_position3,
                DUT.score, DUT.combo_count);
 
       KEY = 2'b11;

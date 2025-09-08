@@ -38,7 +38,7 @@ module mole_generator #(
 		mole_positions <= {NUM_HOLES{1'b0}};
 		if ((prev_mole_clk == 0) && (mole_clk == 1)) begin
 			for (int j = 0; j < NUM_MOLES; j++) begin
-				mole_positions[mole_positions_array[j]] <= 1'b1;\
+				mole_positions[mole_positions_array[j]] <= 1'b1;
 			end
 		end
 

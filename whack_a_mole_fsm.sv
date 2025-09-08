@@ -73,7 +73,7 @@ module whack_a_mole_fsm #(
   
   
   state_type curr_state, next_state;
-	assign start = curr_state;
+  assign start = curr_state;
 
   // next-state logic
   always_comb begin
