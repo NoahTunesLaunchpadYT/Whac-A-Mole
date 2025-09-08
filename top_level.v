@@ -1,5 +1,6 @@
 module top_level #(
-  parameter CLKS_PER_MS    = 50000
+  parameter CLKS_PER_MS    = 50000,
+  parameter DEBOUNCE_DELAY_COUNTS = 2500
 
 )(
 	input         CLOCK_50,              // DE2-115's 50MHz clock signal
@@ -14,14 +15,12 @@ module top_level #(
 					MOLE_UP_MS = 2,
 					MOLE_DOWN_MS = 1,
 					GAME_LENGTH_SECONDS = 20,
-//					CLKS_PER_MS = 50000,
-					DEBOUNCE_DELAY_COUNTS = 2500,
 					MS_PER_SECOND = 1000,
 					MAX_COMBO_COUNT = 99,
 					MAX_SCORE = 9999;
 
+					
 	// Intermediate Wires
-	
 	wire rst, game_in_progress, mole_clk;														// FSM wires
 	wire [$clog2(GAME_LENGTH_SECONDS)-1:0] timer_seconds;
 	wire [$clog2(GAME_LENGTH_SECONDS*MS_PER_SECOND)-1:0] timer_milliseconds;		// Timer wires
@@ -58,6 +57,7 @@ module top_level #(
 									//Output
 									.button_pressed(start_button_pressed)
 									);
+									
 	
 	debounce       			#(.DELAY_COUNTS(DEBOUNCE_DELAY_COUNTS)) 
 									u_reset_button_debounce(
@@ -67,6 +67,7 @@ module top_level #(
 									//Output
 									.button_pressed(rst)
 									);
+									
 	
 	// Noah
 	timer 						#(.GAME_LENGTH_SECONDS(GAME_LENGTH_SECONDS), .CLKS_PER_MS(CLKS_PER_MS))
@@ -79,6 +80,7 @@ module top_level #(
 									.count_down_seconds(timer_seconds),
 									.count_down_milliseconds(timer_milliseconds)
 									);
+									
 
 	// Daniel 
 	mole_generator 			#(.NUM_HOLES(NUM_HOLES), .NUM_MOLES(NUM_MOLES))
@@ -90,21 +92,25 @@ module top_level #(
 									// Outputs
 									.mole_positions(mole_positions)
 									);
+									
 	
 	// Noah
-	hit_logic 					#(.NUM_HOLES(NUM_HOLES))
-									u_hit_logic(
+	hit_logic 					#(.NUM_HOLES(NUM_HOLES),
+									  .DEBOUNCE_DELAY(DEBOUNCE_DELAY_COUNTS)
+									)u_hit_logic(
 									// Inputs:
 									.clk(CLOCK_50),
 									.mole_positions(mole_positions),
 									.switches(SW),
 									.game_in_progress(game_in_progress),
+									
 									// Outputs:
 									.LEDs(LEDR),
 									.miss(miss),
 									.non_full_clear_hit(non_full_clear_hit),
 									.full_clear_hit(full_clear_hit)
 									);
+									
 	
 	// Lara 
 	combo_counter 				u_combo_counter(
@@ -114,6 +120,7 @@ module top_level #(
 									.non_full_clear_hit(non_full_clear_hit),
 									.full_clear_hit(full_clear_hit),
 									.rst(rst),
+									
 									// Output
 									.combo_count(combo_count)
 									);
