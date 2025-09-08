@@ -7,30 +7,8 @@ module top_level_tb;
 	reg  [17:0] SW;
    wire [17:0] LEDR;
    wire [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7;
-   wire game_in_progress = DUT.u_fsm.game_in_progress;
-   wire [17:0] mole_positions = DUT.u_mole_generator.mole_positions;
-	wire mole_clk;
-	wire [1:0] fsm_state_v;                   // small vector to watch in waves
-	assign fsm_state_v = DUT.u_fsm.curr_state; // curr_state is 2 bits in your FSM
-	wire mole_up_window = DUT.u_fsm.mole_up_window;
-	wire [1:0] phase_ms = DUT.u_fsm.phase_ms;
-	wire [$clog2(20000)-1:0] timer_ms = DUT.u_timer.count_down_milliseconds;
-	wire [$clog2(99)-1:0] score_increase = DUT.u_score_counter.score_increase;
-	wire [$clog2(9999)-1:0] score_count = DUT.u_score_counter.score_count;
 	reg [$clog2(20)-1:0] 	cycles_per_clock;
 
-	
-   // Debug wires
-   wire [17:0] prev_switch_states_debug;
-   wire [17:0] switches_sync_debug;
-   wire [2:0]  next_leds_debug; // NUM_MOLES = 3
-   wire hit_flag_debug;
-   wire miss_flag_debug;
-	
-	
-
-	
-//   wire [3:0]  mole_position1, mole_position2, mole_position3;
 	parameter CLKS_PER_MS_TB   = 5;
    top_level #(
 	  .CLKS_PER_MS(CLKS_PER_MS_TB),
@@ -49,24 +27,8 @@ module top_level_tb;
       .HEX4(HEX4),
       .HEX5(HEX5),
       .HEX6(HEX6),
-      .HEX7(HEX7),
-		
-      // Debug outputs
-      .prev_switch_states_debug(prev_switch_states_debug),
-      .switches_sync_debug(switches_sync_debug),
-      .next_leds_debug(next_leds_debug),
-      .hit_flag_debug(hit_flag_debug),
-      .miss_flag_debug(miss_flag_debug)
-   );
-
-   // Connect mole_generator outputs to wires for monitoring
-//   assign mole_positions = DUT.u_mole_generator.mole_positions;
-//   assign mole_position1 = DUT.u_mole_generator.mole_position1;
-//   assign mole_position2 = DUT.u_mole_generator.mole_position2;
-//   assign mole_position3 = DUT.u_mole_generator.mole_position3;
-//	
-	assign mole_clk = DUT.u_fsm.mole_clk;
-	
+      .HEX7(HEX7)
+   );	
 	
    initial begin : clock_block
         CLOCK_50 = 1'b0;
@@ -127,20 +89,7 @@ module top_level_tb;
       KEY[1] = 1'b0;
       #(10*cycles_per_clock);
       KEY[1] = 1'b1;
-		
 
-      #(500*cycles_per_clock);
-		
-      KEY[0] = 1'b0;
-      #(5*cycles_per_clock);
-      KEY[0] = 1'b1;
-		#(5*cycles_per_clock);
-
-//      $display("=== Simulation finishing ===");
-//      $display("Final LEDR = %b", LEDR);
-//      $display("Final Score = %0d, Combo = %0d", DUT.score, DUT.combo_count);
-//      $display("Final Mole positions: %b", mole_positions);
-//      $display("Individual mole indices: %0d, %0d, %0d", mole_position1, mole_position2, mole_position3);
       $finish;
    end
 

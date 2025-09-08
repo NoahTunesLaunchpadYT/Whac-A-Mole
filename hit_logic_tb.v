@@ -25,7 +25,6 @@ module hit_logic_tb;
 		.miss(miss),
 		.non_full_clear_hit(non_full_clear_hit),
 		.full_clear_hit(full_clear_hit)
-
 	);
 	
 

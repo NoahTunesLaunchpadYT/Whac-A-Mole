@@ -10,14 +10,7 @@ module top_level #(
    input  [1:0]  KEY,                   // The 4 push buttons on the board
 	input  [NUM_HOLES-1:0] SW,
    output [NUM_HOLES-1:0] LEDR,                  // 18 red LEDs
-   output [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7, // Eight 7-segment displays
-	
-	// Debug outputs
-   output [NUM_HOLES-1:0] prev_switch_states_debug,
-   output [NUM_HOLES-1:0] switches_sync_debug,
-   output [NUM_HOLES-1:0] next_leds_debug,
-   output hit_flag_debug,
-   output miss_flag_debug
+   output [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 // Eight 7-segment displays
 );
 	
 	localparam 	NUM_MOLES = 3,
@@ -115,14 +108,7 @@ module top_level #(
 									.LEDs(LEDR),
 									.miss(miss),
 									.non_full_clear_hit(non_full_clear_hit),
-									.full_clear_hit(full_clear_hit),
-
-									// Debug
-									.prev_switch_states_debug(prev_switch_states_debug),
-									.switches_sync_debug(switches_sync_debug),
-									.next_leds_debug(next_leds_debug),
-									.hit_flag_debug(hit_flag_debug),
-									.miss_flag_debug(miss_flag_debug)
+									.full_clear_hit(full_clear_hit)
 									);
 									
 	

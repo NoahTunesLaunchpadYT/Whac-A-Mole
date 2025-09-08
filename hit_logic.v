@@ -13,14 +13,7 @@ module hit_logic #(
 	output reg [NUM_HOLES - 1 : 0] LEDs,
 	output reg miss,
 	output reg non_full_clear_hit,
-	output reg full_clear_hit,
-	
-	// Debug
-	output wire [NUM_HOLES - 1 : 0] prev_switch_states_debug,
-	output wire [NUM_HOLES - 1 : 0] switches_sync_debug,
-	output wire [NUM_HOLES - 1 : 0] next_leds_debug,
-	output wire hit_flag_debug,
-	output wire miss_flag_debug
+	output reg full_clear_hit
 );
 	// Synchronized switches - these are the ones to use in your logic
 	wire [NUM_HOLES - 1 : 0] switches_sync;
@@ -42,12 +35,6 @@ module hit_logic #(
 	reg prev_moles_up = 1'b0;		// In MOLE_UP state in previous clk cycle
 	reg hit_flag = 1'b0;				// Async pulse to indicate hit happened
 	reg miss_flag = 1'b0; 			// Async pulse to indicate miss happened
-
-	assign prev_switch_states_debug = prev_switch_states;
-	assign switches_sync_debug      = switches_sync;
-	assign next_leds_debug          = next_leds;
-	assign hit_flag_debug           = hit_flag;
-	assign miss_flag_debug          = miss_flag;
 	
 	// Check if we're current in the MOLE_UP state
 	wire moles_up_state = (mole_positions != {NUM_HOLES{1'b0}});
