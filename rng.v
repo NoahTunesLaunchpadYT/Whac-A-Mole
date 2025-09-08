@@ -1,7 +1,7 @@
 module rng #(
-   parameter OFFSET=200,
-   parameter MAX_VALUE=1223,
-   parameter SEED= 10'b0000000001 // Random number seed
+   parameter OFFSET = 200,
+   parameter MAX_VALUE = 1223,
+   parameter SEED = 10'b0000000001 // Random number seed
 ) (
    input clk,
    output [$clog2(MAX_VALUE)-1:0] random_value // 11-bits for values 200 to 1223.
@@ -11,7 +11,7 @@ module rng #(
    // Initialise the shift reg to SEED, 
    initial lfsr = SEED;
 
-    // Feedback:
+	// Feedback:
 	wire feedback;
    assign feedback = lfsr[10] ^ lfsr[7];
 
