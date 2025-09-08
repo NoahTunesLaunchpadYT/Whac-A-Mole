@@ -1,4 +1,7 @@
-module top_level (
+module top_level #(
+  parameter CLKS_PER_MS    = 50000
+
+)(
 	input         CLOCK_50,              // DE2-115's 50MHz clock signal
    input  [1:0]  KEY,                   // The 4 push buttons on the board
 	input  [17:0] SW,
@@ -8,10 +11,10 @@ module top_level (
 	
 	localparam 	NUM_HOLES = 18,
 					NUM_MOLES = 3,
-					MOLE_UP_MS = 2000,
-					MOLE_DOWN_MS = 1000,
+					MOLE_UP_MS = 2,
+					MOLE_DOWN_MS = 1,
 					GAME_LENGTH_SECONDS = 20,
-					CLKS_PER_MS = 50000,
+//					CLKS_PER_MS = 50000,
 					DEBOUNCE_DELAY_COUNTS = 2500,
 					MS_PER_SECOND = 1000,
 					MAX_COMBO_COUNT = 99,
@@ -127,21 +130,28 @@ module top_level (
 								);
 	
 
-	display_two_digits 	u_timer_display(
+	display_two_digits 	#(
+								.MAX_VALUE(GAME_LENGTH_SECONDS)
+								)u_timer_display(
 								.clk(CLOCK_50),
+								.rst(rst),
 								.value(timer_seconds),
 								.display0(HEX6),
 								.display1(HEX7)
 								);
 	
-	display_two_digits 	u_combo_display(
+	display_two_digits 	#(
+								.MAX_VALUE(99)
+								)u_combo_display(
 								.clk(CLOCK_50),
+								.rst(rst),
 								.value(combo_count),
 								.display0(HEX4),
 								.display1(HEX5)
 								);
 	
 	display_four_digits  u_score_display(
+								.rst(rst),
 								.clk(CLOCK_50),
 								.value(score),
 								.display0(HEX0),

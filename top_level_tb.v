@@ -1,4 +1,4 @@
-`timescale 1ns/1ps
+`timescale 1ns/1ns
 
 module top_level_tb;
 
@@ -9,9 +9,12 @@ module top_level_tb;
    wire [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7;
 
    wire [17:0] mole_positions;
+	wire mole_clk;
    wire [3:0]  mole_position1, mole_position2, mole_position3;
-
-   top_level DUT (
+	parameter CLKS_PER_MS_TB   = 5;
+   top_level #(
+	  .CLKS_PER_MS(CLKS_PER_MS_TB)
+	) DUT (
       .CLOCK_50(CLOCK_50),
       .KEY(KEY),
       .SW(SW),
@@ -32,6 +35,8 @@ module top_level_tb;
    assign mole_position2 = DUT.u_mole_generator.mole_position2;
    assign mole_position3 = DUT.u_mole_generator.mole_position3;
 	
+	assign mole_clk = DUT.u_fsm.mole_clk;
+	
 	
    initial begin : clock_block
         CLOCK_50 = 1'b0;
@@ -44,8 +49,8 @@ module top_level_tb;
    initial begin
       $display("=== Simulation started ===");
 
-      $monitor("t=%0t ns | KEY=%b | SW=%b | mole_positions=%b | mole1=%0d mole2=%0d mole3=%0d | Score=%0d | Combo=%0d",
-               $time, KEY, SW, mole_positions, mole_position1, mole_position2, mole_position3,
+      $monitor("t=%0t ns | KEY=%b | SW=%b | mole_clk=%b | mole_positions=%b | mole1=%0d mole2=%0d mole3=%0d | Score=%0d | Combo=%0d",
+               $time, KEY, SW, mole_clk, mole_positions, mole_position1, mole_position2, mole_position3,
                DUT.score, DUT.combo_count);
 
       KEY = 2'b11;
@@ -62,14 +67,14 @@ module top_level_tb;
       #100;
       KEY[1] = 1'b1;
 
-      #5;
+      #100;
       SW[4] = 1'b1;
-      #5;
+      #50;
       SW[9] = 1'b1;
 
-      #5;
+      #50;
       SW[5] = 1'b1;
-      #5;
+      #0;
       SW[14] = 1'b1;
 		
 
@@ -80,11 +85,11 @@ module top_level_tb;
       KEY[0] = 1'b1;
 		#100;
 
-      $display("=== Simulation finishing ===");
-      $display("Final LEDR = %b", LEDR);
-      $display("Final Score = %0d, Combo = %0d", DUT.score, DUT.combo_count);
-      $display("Final Mole positions: %b", mole_positions);
-      $display("Individual mole indices: %0d, %0d, %0d", mole_position1, mole_position2, mole_position3);
+//      $display("=== Simulation finishing ===");
+//      $display("Final LEDR = %b", LEDR);
+//      $display("Final Score = %0d, Combo = %0d", DUT.score, DUT.combo_count);
+//      $display("Final Mole positions: %b", mole_positions);
+//      $display("Individual mole indices: %0d, %0d, %0d", mole_position1, mole_position2, mole_position3);
       $finish;
    end
 

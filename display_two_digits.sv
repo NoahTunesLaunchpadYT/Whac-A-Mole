@@ -1,8 +1,10 @@
 `timescale 1ms/1ps
-module display_two_digits (
+module display_two_digits #(
+	parameter int unsigned MAX_VALUE = 99
+)(
     input         clk,
     input         rst,
-    input  [6:0]  value,
+    input  [$clog2(MAX_VALUE)-1:0]  value,
     output [6:0]  display0,
     output [6:0]  display1
 );
