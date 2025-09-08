@@ -17,12 +17,26 @@ module top_level_tb;
 	wire [$clog2(20000)-1:0] timer_ms = DUT.u_timer.count_down_milliseconds;
 	wire [$clog2(99)-1:0] score_increase = DUT.u_score_counter.score_increase;
 	wire [$clog2(9999)-1:0] score_count = DUT.u_score_counter.score_count;
+	reg [$clog2(20)-1:0] 	cycles_per_clock;
+
+	
+   // Debug wires
+   wire [17:0] prev_switch_states_debug;
+   wire [17:0] switches_sync_debug;
+   wire [2:0]  next_leds_debug; // NUM_MOLES = 3
+   wire hit_flag_debug;
+   wire miss_flag_debug;
+	
+	
+
 	
 //   wire [3:0]  mole_position1, mole_position2, mole_position3;
 	parameter CLKS_PER_MS_TB   = 5;
    top_level #(
 	  .CLKS_PER_MS(CLKS_PER_MS_TB),
-	  .DEBOUNCE_DELAY_COUNTS(2)
+	  .DEBOUNCE_DELAY_COUNTS(2),
+	  .MOLE_UP_MS(5),
+	  .MOLE_DOWN_MS(5)
 	) DUT (
       .CLOCK_50(CLOCK_50),
       .KEY(KEY),
@@ -35,7 +49,14 @@ module top_level_tb;
       .HEX4(HEX4),
       .HEX5(HEX5),
       .HEX6(HEX6),
-      .HEX7(HEX7)
+      .HEX7(HEX7),
+		
+      // Debug outputs
+      .prev_switch_states_debug(prev_switch_states_debug),
+      .switches_sync_debug(switches_sync_debug),
+      .next_leds_debug(next_leds_debug),
+      .hit_flag_debug(hit_flag_debug),
+      .miss_flag_debug(miss_flag_debug)
    );
 
    // Connect mole_generator outputs to wires for monitoring
@@ -56,6 +77,7 @@ module top_level_tb;
     end
 
    initial begin
+		cycles_per_clock = 20;
 //      $display("=== Simulation started ===");
 //
 //      $monitor("t=%0t ns | KEY=%b | timer_ms=%b | fsm_state_v=%b | phase_ms=%b | mole_up_window=%b | SW=%b | mole_clk=%b | mole_positions=%b | mole1=%0d mole2=%0d mole3=%0d | Score=%0d | Combo=%0d",
@@ -65,44 +87,54 @@ module top_level_tb;
       KEY = 2'b11;
       SW  = 18'b0;
 
-      #200;
+      #(30*cycles_per_clock);
       KEY[0] = 1'b0;
-      #200;
+      #(30*cycles_per_clock);
       KEY[0] = 1'b1;
 
       // Start the game
-      #200;
+      #(30*cycles_per_clock);
       KEY[1] = 1'b0;
-      #200;
+      #(5*cycles_per_clock);
       KEY[1] = 1'b1;
-
-      #700;
-      SW[8] = 1'b1;
-      #200;
-      SW[9] = 1'b1;
-
-      #200;
-      SW[5] = 1'b1;
-      #200;
+		
+      #(6*cycles_per_clock);
+      SW[13] = 1'b1;
+		#(6*cycles_per_clock);
+		SW[12] = 1'b1;
+		#(3*cycles_per_clock);
+		
+      #(40*cycles_per_clock);
+      SW[16] = 1'b1;
+      #(6*cycles_per_clock);
       SW[14] = 1'b1;
-		#200;
+      #(6*cycles_per_clock);
+      SW[11] = 1'b1;
+
+      #(10*cycles_per_clock);
+      SW[5] = 1'b1;
+      #(10*cycles_per_clock);
+      SW[14] = 1'b0;
+		
+		// Reset the game
+		#(60*cycles_per_clock);
       KEY[0] = 1'b0;
-      #200;
+      #(10*cycles_per_clock);
       KEY[0] = 1'b1;
 
       // Start the game
-      #200;
+      #(10*cycles_per_clock);
       KEY[1] = 1'b0;
-      #200;
+      #(10*cycles_per_clock);
       KEY[1] = 1'b1;
 		
 
-      #10000;
+      #(500*cycles_per_clock);
 		
       KEY[0] = 1'b0;
-      #100;
+      #(5*cycles_per_clock);
       KEY[0] = 1'b1;
-		#100;
+		#(5*cycles_per_clock);
 
 //      $display("=== Simulation finishing ===");
 //      $display("Final LEDR = %b", LEDR);

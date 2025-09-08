@@ -1,19 +1,26 @@
 module top_level #(
   parameter CLKS_PER_MS    = 50000,
-  parameter DEBOUNCE_DELAY_COUNTS = 2500
+  parameter DEBOUNCE_DELAY_COUNTS = 2500,
+  parameter NUM_HOLES = 18,
+  parameter MOLE_UP_MS = 1000,
+  parameter MOLE_DOWN_MS = 1000
 
 )(
 	input         CLOCK_50,              // DE2-115's 50MHz clock signal
    input  [1:0]  KEY,                   // The 4 push buttons on the board
-	input  [17:0] SW,
-   output [17:0] LEDR,                  // 18 red LEDs
-   output [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7 // Eight 7-segment displays
+	input  [NUM_HOLES-1:0] SW,
+   output [NUM_HOLES-1:0] LEDR,                  // 18 red LEDs
+   output [6:0]  HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7, // Eight 7-segment displays
+	
+	// Debug outputs
+   output [NUM_HOLES-1:0] prev_switch_states_debug,
+   output [NUM_HOLES-1:0] switches_sync_debug,
+   output [NUM_HOLES-1:0] next_leds_debug,
+   output hit_flag_debug,
+   output miss_flag_debug
 );
 	
-	localparam 	NUM_HOLES = 18,
-					NUM_MOLES = 3,
-					MOLE_UP_MS = 2,
-					MOLE_DOWN_MS = 1,
+	localparam 	NUM_MOLES = 3,
 					GAME_LENGTH_SECONDS = 20,
 					MS_PER_SECOND = 1000,
 					MAX_COMBO_COUNT = 99,
@@ -108,7 +115,14 @@ module top_level #(
 									.LEDs(LEDR),
 									.miss(miss),
 									.non_full_clear_hit(non_full_clear_hit),
-									.full_clear_hit(full_clear_hit)
+									.full_clear_hit(full_clear_hit),
+
+									// Debug
+									.prev_switch_states_debug(prev_switch_states_debug),
+									.switches_sync_debug(switches_sync_debug),
+									.next_leds_debug(next_leds_debug),
+									.hit_flag_debug(hit_flag_debug),
+									.miss_flag_debug(miss_flag_debug)
 									);
 									
 	
